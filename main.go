@@ -28,6 +28,8 @@ import (
 	"unicode/utf8"
 )
 
+const EMAIL_DOMAIN = "company.test"
+
 // Quellen für Namen:
 // https://offenedaten-koeln.de/dataset/vornamen
 // https://github.com/HBehrens/phonet4n/blob/master/src/Tests/data/nachnamen.txt
@@ -42,7 +44,7 @@ type Nachname struct {
 }
 
 type Identitaet struct {
-	Vorname, Nachname, Geschlecht string
+	Vorname, Nachname, Geschlecht, Email string
 }
 
 func main() {
@@ -53,14 +55,18 @@ func main() {
 	anzahlNachnamen := len(nachnamen)
 	fmt.Println("#Vornamen: " + strconv.Itoa(anzahlVornamen))
 	fmt.Println("#Nachnamen: " + strconv.Itoa(anzahlNachnamen))
-	rand.Seed(time.Now().UnixNano())
-	vornm := vornamen[rand.Intn(anzahlVornamen)]
-	id := Identitaet{
-		Vorname:    vornm.Vorname,
-		Nachname:   nachnamen[rand.Intn(anzahlNachnamen)].Nachname,
-		Geschlecht: vornm.Geschlecht,
+	for i := 0; i < 100; i++ {
+		rand.Seed(time.Now().UnixNano())
+		vornm := vornamen[rand.Intn(anzahlVornamen)]
+		nachnm := nachnamen[rand.Intn(anzahlNachnamen)]
+		id := Identitaet{
+			Vorname:    vornm.Vorname,
+			Nachname:   nachnm.Nachname,
+			Geschlecht: vornm.Geschlecht,
+			Email:      vornm.Vorname + "." + nachnm.Nachname,
+		}
+		fmt.Println(id.Vorname + ";" + id.Nachname + ";" + id.Geschlecht + ";" + id.Email + "@" + EMAIL_DOMAIN)
 	}
-	fmt.Println("Generierter Name: " + id.Vorname + " " + id.Nachname + " (" + id.Geschlecht + ")")
 }
 
 func holeVornamen(filename string) (vornamen []Vorname, err error) {
