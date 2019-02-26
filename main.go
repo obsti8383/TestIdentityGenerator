@@ -19,9 +19,11 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -55,17 +57,23 @@ func main() {
 	anzahlNachnamen := len(nachnamen)
 	fmt.Println("#Vornamen: " + strconv.Itoa(anzahlVornamen))
 	fmt.Println("#Nachnamen: " + strconv.Itoa(anzahlNachnamen))
-	for i := 0; i < 100; i++ {
+	//for i := 0; i < 100; i++ {
+	for {
 		rand.Seed(time.Now().UnixNano())
 		vornm := vornamen[rand.Intn(anzahlVornamen)]
 		nachnm := nachnamen[rand.Intn(anzahlNachnamen)]
+		email := Accents(strings.ToLower(vornm.Vorname)) + "." + Accents(strings.ToLower(nachnm.Nachname)) + "@" + EMAIL_DOMAIN
+		validateErr := ValidateFormat(email)
+		if validateErr != nil {
+			panic("Validation error: " + email)
+		}
 		id := Identitaet{
 			Vorname:    vornm.Vorname,
 			Nachname:   nachnm.Nachname,
 			Geschlecht: vornm.Geschlecht,
-			Email:      vornm.Vorname + "." + nachnm.Nachname,
+			Email:      email,
 		}
-		fmt.Println(id.Vorname + ";" + id.Nachname + ";" + id.Geschlecht + ";" + id.Email + "@" + EMAIL_DOMAIN)
+		fmt.Println(id.Vorname + ";" + id.Nachname + ";" + id.Geschlecht + ";" + id.Email)
 	}
 }
 
@@ -121,4 +129,20 @@ func holeNachnamen(filename string) (nachnamen []Nachname, err error) {
 	}
 
 	return nachnamen, nil
+}
+
+// following code excerpts:
+// Copyright (c) 2017 Florian Carrere <florian@carrere.cc>
+// (The MIT License)
+var (
+	ErrBadFormat = errors.New("invalid format")
+
+	emailRegexp = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+)
+
+func ValidateFormat(email string) error {
+	if !emailRegexp.MatchString(email) {
+		return ErrBadFormat
+	}
+	return nil
 }
