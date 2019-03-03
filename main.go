@@ -36,6 +36,8 @@ const EMAIL_DOMAIN = "company.test"
 // https://offenedaten-koeln.de/dataset/vornamen
 // https://github.com/HBehrens/phonet4n/blob/master/src/Tests/data/nachnamen.txt
 // Quellen für Berufe: Wikipedia.de
+// Quellen für Abteilungen:
+// http://abimagazin.de/beruf-karriere/arbeitsmarkt/unternehmensportraits/infotext-typische-abteilungen-04868.htm
 
 type Vorname struct {
 	Vorname    string
@@ -47,26 +49,30 @@ type Nachname struct {
 }
 
 type Identitaet struct {
-	Vorname, Nachname, Geschlecht, Email, Geburtstag, Beruf string
+	Vorname, Nachname, Geschlecht, Email, Geburtstag, Beruf, Abteilung string
 }
 
 func main() {
 	vornamen, _ := holeVornamen("vornamen.txt")
 	nachnamen, _ := holeNachnamen("nachnamen.txt")
 	berufe, _ := holeBerufe("berufe.txt")
+	abteilungen, _ := holeAbteilungen("abteilungen.txt")
 
 	anzahlVornamen := len(vornamen)
 	anzahlNachnamen := len(nachnamen)
 	anzahlBerufe := len(berufe)
+	anzahlAbteilungen := len(abteilungen)
 	fmt.Println("#Vornamen: " + strconv.Itoa(anzahlVornamen))
 	fmt.Println("#Nachnamen: " + strconv.Itoa(anzahlNachnamen))
 	fmt.Println("#Berufe: " + strconv.Itoa(anzahlBerufe))
+	fmt.Println("#Abteilungen: " + strconv.Itoa(anzahlAbteilungen))
 	//for i := 0; i < 100; i++ {
 	for {
 		rand.Seed(time.Now().UnixNano())
 		vornm := vornamen[rand.Intn(anzahlVornamen)]
 		nachnm := nachnamen[rand.Intn(anzahlNachnamen)]
 		beruf := berufe[rand.Intn(anzahlBerufe)]
+		abteilung := abteilungen[rand.Intn(anzahlAbteilungen)]
 		email := Accents(strings.ToLower(vornm.Vorname)) + "." + Accents(strings.ToLower(nachnm.Nachname)) + "@" + EMAIL_DOMAIN
 		validateErr := ValidateFormat(email)
 		if validateErr != nil {
@@ -79,8 +85,9 @@ func main() {
 			Email:      email,
 			Geburtstag: Geburtstag(16, 105).Format("2006-01-02"),
 			Beruf:      beruf,
+			Abteilung:  abteilung,
 		}
-		fmt.Println(id.Vorname + ";" + id.Nachname + ";" + id.Geschlecht + ";" + id.Email + ";" + id.Geburtstag + ";" + id.Beruf)
+		fmt.Println(id.Vorname + ";" + id.Nachname + ";" + id.Geschlecht + ";" + id.Email + ";" + id.Geburtstag + ";" + id.Beruf + ";" + id.Abteilung)
 	}
 }
 

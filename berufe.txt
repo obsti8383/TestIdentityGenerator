@@ -11,7 +11,7 @@ Absatzwirtschaft und Kundenberatung
     Kaufmann im Gesundheitswesen
     Kaufmann im Groß- und Außenhandel
     Kaufmann für Tourismus und Freizeit
-    Kaufmann für Versicherungen und Finanzen (früher: Versicherungskaufmann)
+    Kaufmann für Versicherungen und Finanzen
     Musikalienhändler
     Pharmazeutisch-kaufmännischer Angestellter
     Sport- und Fitnesskaufmann
@@ -23,7 +23,7 @@ Medienkaufleute
     Medienkaufmann Digital und Print
     Veranstaltungskaufmann
 Kaufmännische Verwaltung
-    Kaufmann für Büromanagement (ersetzt seit 1. August 2014: Bürokaufmann, Kaufmann für Bürokommunikation und Fachangestellter für Bürokommunikation)
+    Kaufmann für Büromanagement
     Industriekaufmann
     Kaufmann im Gesundheitswesen
     Fachpraktiker für Bürokommunikation
@@ -43,7 +43,7 @@ Kaufmännische Verkehrsberufe
     Fachkraft für Kurier-, Express- und Postdienstleistungen
     Fachkraft für Möbel-, Küchen- und Umzugsservice
     Kaufmann für Kurier-, Express- und Postdienstleistungen
-    Kaufmann für Spedition und Logistikdienstleistung (früher: Speditionskaufmann)
+    Kaufmann für Spedition und Logistikdienstleistung
     Kaufmann für Verkehrsservice
     Kaufmann im Eisenbahn- und Straßenverkehr
     Luftverkehrskaufmann
@@ -61,7 +61,7 @@ Transport und Logistik
     Fachkraft für Kurier-, Express und Postdienstleistungen
     Fachkraft im Fahrbetrieb
     Hafenschiffer
-    Fachkraft für Hafenlogistik (früher: Seegüterkontrolleur)
+    Fachkraft für Hafenlogistik
     Servicefahrer
 Bergleute
     Aufbereitungsmechaniker
@@ -90,7 +90,7 @@ Fertigungstechnik
     Maschinen- und Anlagenführer
     Metall- und Glockengießer
     Metallschleifer
-    Metalltechniker (Österreich)
+    Metalltechniker
     Metallverformer
     Revolverdreher
     Schleifer
@@ -98,11 +98,11 @@ Fertigungstechnik
     Teilezurichter
     Verfahrensmechaniker für Kunststoff- und Kautschuktechnik
     Verfahrensmechaniker in der Hütten- und Halbzeugindustrie
-    Vorpolierer Schmuck- und Kleingeräteherstellung (Industrie)
+    Vorpolierer Schmuck- und Kleingeräteherstellung
     Zerspanungsmechaniker
 Installations- und Metallbautechnik
     Anlagenmechaniker
-    Anlagenmechaniker für Sanitär-, Heizungs- und Klimatechnik (früher: Zentralheizungs- und Lüftungsbauer)
+    Anlagenmechaniker für Sanitär-, Heizungs- und Klimatechnik
     Kälteanlagenbauer
     Klempner
     Konstruktionsmechaniker
@@ -229,9 +229,9 @@ Holzberufe
     Biologiemodellmacher
     Bootsbauer
     Bürsten- und Pinselmacher
-    Drechsler (Elfenbeinschnitzer)
+    Drechsler
     Fachkraft für Holz- und Bautenschutzarbeiten
-    Flechtwerkgestalter (früher: Korbmacher)
+    Flechtwerkgestalter
     Glaser
     Holzbearbeitungsmechaniker
     Holzbildhauer
@@ -240,7 +240,7 @@ Holzberufe
     Holz- und Bautenschützer
     Böttcher
     Leichtflugzeugbauer
-    Rollladen- und Sonnenschutzmechatroniker (früher: Rollladen- und Jalousiebauer)
+    Rollladen- und Sonnenschutzmechatroniker
     Schirmmacher
     Spielzeughersteller
     Technischer Modellbauer
@@ -248,7 +248,7 @@ Holzberufe
 
 Musikinstrumentenberufe
 
-    Bogenmacher (lat.: Agittarius)
+    Bogenmacher
     Geigenbauer
     Handzuginstrumentenmacher
     Holzblasinstrumentenmacher
@@ -289,7 +289,7 @@ Bekleidungsberufe
 
 Pelz- und Lederberufe
 
-    Fachkraft für Lederverarbeitung (früher: Schuh- und Lederwarenstepper)
+    Fachkraft für Lederverarbeitung
     Gerber
     Handschuhmacher
     Kürschner
@@ -327,7 +327,7 @@ Laborberufe
     Milchwirtschaftlicher Laborant
     Pharmazeutisch-technischer Assistent
     Physiklaborant
-    Stoffprüfer (Chemie) Glas-, Keramische Industrie sowie Steine und Erden
+    Stoffprüfer  Glas-, Keramische Industrie sowie Steine und Erden
     Textillaborant
     Werkstoffprüfer
 
@@ -398,19 +398,19 @@ Gesundheitsfachberufe
     Logopäde
     Masseur und medizinischer Bademeister
     Medizinisch-Technischer Assistent
-    Medizinischer Fachangestellter (früher: Arzthelfer)
+    Medizinischer Fachangestellter
     Orthoptist
     Physiotherapeut
     Präparator
     Podologe
     Rettungsassistent bzw. Notfallsanitäter
-    Tiermedizinischer Fachangestellter (früher: Tierarzthelfer)
-    Zahnmedizinische Fachangestellte (früher: Zahnarzthelferin)
+    Tiermedizinischer Fachangestellter
+    Zahnmedizinische Fachangestellte
     Operationstechnischer Assistent
 
 Sozialberufe
 
-    Assistenz (Behindertenhilfe)
+    Assistenz
     Erzieher
     Heilerziehungspfleger
 
@@ -453,7 +453,7 @@ Ernährungsberufe
     Fleischer
     Konditor
     Molkereifachmann
-    Müller (Verfahrenstechnologe/technologin Mühlen- und Getreidewirtschaft)
+    Müller
     Weinküfer
 
 Gastgewerbe und Hauswirtschaft
