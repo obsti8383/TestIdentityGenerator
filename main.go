@@ -49,7 +49,7 @@ type Nachname struct {
 }
 
 type Identitaet struct {
-	Vorname, Nachname, Geschlecht, Email, Geburtstag, Beruf, Abteilung string
+	Id, Vorname, Nachname, Geschlecht, Email, Geburtstag, Beruf, Abteilung string
 }
 
 func main() {
@@ -66,8 +66,7 @@ func main() {
 	fmt.Println("#Nachnamen: " + strconv.Itoa(anzahlNachnamen))
 	fmt.Println("#Berufe: " + strconv.Itoa(anzahlBerufe))
 	fmt.Println("#Abteilungen: " + strconv.Itoa(anzahlAbteilungen))
-	//for i := 0; i < 100; i++ {
-	for {
+	for i := 0; i < 100; i++ {
 		rand.Seed(time.Now().UnixNano())
 		vornm := vornamen[rand.Intn(anzahlVornamen)]
 		nachnm := nachnamen[rand.Intn(anzahlNachnamen)]
@@ -79,6 +78,7 @@ func main() {
 			panic("Validation error: " + email)
 		}
 		id := Identitaet{
+			Id:         strings.ToUpper(vornm.Vorname[0:1]+nachnm.Nachname[0:1]) + strconv.Itoa(i),
 			Vorname:    vornm.Vorname,
 			Nachname:   nachnm.Nachname,
 			Geschlecht: vornm.Geschlecht,
@@ -87,7 +87,7 @@ func main() {
 			Beruf:      beruf,
 			Abteilung:  abteilung,
 		}
-		fmt.Println(id.Vorname + ";" + id.Nachname + ";" + id.Geschlecht + ";" + id.Email + ";" + id.Geburtstag + ";" + id.Beruf + ";" + id.Abteilung)
+		fmt.Println(id.Id + ";" + id.Vorname + ";" + id.Nachname + ";" + id.Geschlecht + ";" + id.Email + ";" + id.Geburtstag + ";" + id.Beruf + ";" + id.Abteilung)
 	}
 }
 
