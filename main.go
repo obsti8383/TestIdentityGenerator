@@ -35,6 +35,7 @@ const EMAIL_DOMAIN = "company.test"
 // Quellen für Namen:
 // https://offenedaten-koeln.de/dataset/vornamen
 // https://github.com/HBehrens/phonet4n/blob/master/src/Tests/data/nachnamen.txt
+// Quellen für Berufe: Wikipedia.de
 
 type Vorname struct {
 	Vorname    string
@@ -46,22 +47,26 @@ type Nachname struct {
 }
 
 type Identitaet struct {
-	Vorname, Nachname, Geschlecht, Email string
+	Vorname, Nachname, Geschlecht, Email, Geburtstag, Beruf string
 }
 
 func main() {
 	vornamen, _ := holeVornamen("vornamen.txt")
 	nachnamen, _ := holeNachnamen("nachnamen.txt")
+	berufe, _ := holeBerufe("berufe.txt")
 
 	anzahlVornamen := len(vornamen)
 	anzahlNachnamen := len(nachnamen)
+	anzahlBerufe := len(berufe)
 	fmt.Println("#Vornamen: " + strconv.Itoa(anzahlVornamen))
 	fmt.Println("#Nachnamen: " + strconv.Itoa(anzahlNachnamen))
+	fmt.Println("#Berufe: " + strconv.Itoa(anzahlBerufe))
 	//for i := 0; i < 100; i++ {
 	for {
 		rand.Seed(time.Now().UnixNano())
 		vornm := vornamen[rand.Intn(anzahlVornamen)]
 		nachnm := nachnamen[rand.Intn(anzahlNachnamen)]
+		beruf := berufe[rand.Intn(anzahlBerufe)]
 		email := Accents(strings.ToLower(vornm.Vorname)) + "." + Accents(strings.ToLower(nachnm.Nachname)) + "@" + EMAIL_DOMAIN
 		validateErr := ValidateFormat(email)
 		if validateErr != nil {
@@ -72,8 +77,10 @@ func main() {
 			Nachname:   nachnm.Nachname,
 			Geschlecht: vornm.Geschlecht,
 			Email:      email,
+			Geburtstag: Geburtstag(16, 105).Format("2006-01-02"),
+			Beruf:      beruf,
 		}
-		fmt.Println(id.Vorname + ";" + id.Nachname + ";" + id.Geschlecht + ";" + id.Email)
+		fmt.Println(id.Vorname + ";" + id.Nachname + ";" + id.Geschlecht + ";" + id.Email + ";" + id.Geburtstag + ";" + id.Beruf)
 	}
 }
 
@@ -145,4 +152,19 @@ func ValidateFormat(email string) error {
 		return ErrBadFormat
 	}
 	return nil
+}
+
+func Geburtstag(minAge, maxAge int) time.Time {
+	if minAge > maxAge {
+		panic("invalid range")
+	}
+	now := time.Now()
+	from := now.AddDate(-maxAge, 0, 0)
+	to := now.AddDate(-minAge, 0, 0)
+
+	rand64 := rand.New(rand.NewSource(time.Now().UTC().UnixNano()).(rand.Source64))
+	unixTime := from.Unix() + rand64.Int63n(to.Unix()-from.Unix()+1)
+	birthday := time.Unix(unixTime, 0)
+	roundedBirthday := time.Date(birthday.Year(), birthday.Month(), birthday.Day(), 0, 0, 0, 0, birthday.Location())
+	return roundedBirthday
 }
