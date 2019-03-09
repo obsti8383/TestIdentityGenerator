@@ -19,10 +19,13 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"errors"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -30,7 +33,7 @@ import (
 	"unicode/utf8"
 )
 
-const EMAIL_DOMAIN = "company.test"
+const STANDARD_EMAIL_DOMAIN = "company.test"
 
 // Quellen für Namen:
 // https://offenedaten-koeln.de/dataset/vornamen
@@ -49,10 +52,28 @@ type Nachname struct {
 }
 
 type Identitaet struct {
-	Id, Vorname, Nachname, Geschlecht, Email, Geburtstag, Beruf, Abteilung string
+	Id         string `json:"id"`
+	Vorname    string `json:"firstName"`
+	Nachname   string `json:"surname"`
+	Geschlecht string `json:"sex"`
+	Email      string `json:"mail"`
+	Geburtstag string `json:"birthday"`
+	Beruf      string `json:"job"`
+	Abteilung  string `json:"department"`
 }
 
 func main() {
+	// parse command line parameters/flags
+	anzahlIdentitaeten := flag.Int("anzahl", 100, "Anzahl der zu generierenden Identitäten")
+	emailDomain := flag.String("domain", STANDARD_EMAIL_DOMAIN, "Valid Email Domain")
+	jsonFlag := flag.Bool("json", false, "for output in JSON")
+	flag.Parse()
+	if !isEmailDomainValid(*emailDomain) {
+		fmt.Println("Error: Invalid EMail Domain\n")
+		//flag.PrintDefaults()
+		os.Exit(1)
+	}
+
 	vornamen, _ := holeVornamen("vornamen.txt")
 	nachnamen, _ := holeNachnamen("nachnamen.txt")
 	berufe, _ := holeBerufe("berufe.txt")
@@ -62,23 +83,23 @@ func main() {
 	anzahlNachnamen := len(nachnamen)
 	anzahlBerufe := len(berufe)
 	anzahlAbteilungen := len(abteilungen)
-	fmt.Println("#Vornamen: " + strconv.Itoa(anzahlVornamen))
-	fmt.Println("#Nachnamen: " + strconv.Itoa(anzahlNachnamen))
-	fmt.Println("#Berufe: " + strconv.Itoa(anzahlBerufe))
-	fmt.Println("#Abteilungen: " + strconv.Itoa(anzahlAbteilungen))
-	for i := 0; i < 100; i++ {
+	//fmt.Println("#Vornamen: " + strconv.Itoa(anzahlVornamen))
+	//fmt.Println("#Nachnamen: " + strconv.Itoa(anzahlNachnamen))
+	//fmt.Println("#Berufe: " + strconv.Itoa(anzahlBerufe))
+	//fmt.Println("#Abteilungen: " + strconv.Itoa(anzahlAbteilungen))
+	for i := 0; i < *anzahlIdentitaeten; i++ {
 		rand.Seed(time.Now().UnixNano())
 		vornm := vornamen[rand.Intn(anzahlVornamen)]
 		nachnm := nachnamen[rand.Intn(anzahlNachnamen)]
 		beruf := berufe[rand.Intn(anzahlBerufe)]
 		abteilung := abteilungen[rand.Intn(anzahlAbteilungen)]
-		email := Accents(strings.ToLower(vornm.Vorname)) + "." + Accents(strings.ToLower(nachnm.Nachname)) + "@" + EMAIL_DOMAIN
+		email := Accents(strings.ToLower(vornm.Vorname)) + "." + Accents(strings.ToLower(nachnm.Nachname)) + "@" + *emailDomain
 		validateErr := ValidateFormat(email)
 		if validateErr != nil {
 			panic("Validation error: " + email)
 		}
 		id := Identitaet{
-			Id:         strings.ToUpper(vornm.Vorname[0:1]+nachnm.Nachname[0:1]) + strconv.Itoa(i),
+			Id:         strings.ToUpper(Accents(vornm.Vorname)[0:1]+Accents(nachnm.Nachname)[0:2]) + strconv.Itoa(i),
 			Vorname:    vornm.Vorname,
 			Nachname:   nachnm.Nachname,
 			Geschlecht: vornm.Geschlecht,
@@ -87,8 +108,22 @@ func main() {
 			Beruf:      beruf,
 			Abteilung:  abteilung,
 		}
-		fmt.Println(id.Id + ";" + id.Vorname + ";" + id.Nachname + ";" + id.Geschlecht + ";" + id.Email + ";" + id.Geburtstag + ";" + id.Beruf + ";" + id.Abteilung)
+
+		if *jsonFlag {
+			printIdAsJSON(id)
+		} else {
+			printIdAsCSV(id)
+		}
 	}
+}
+
+func printIdAsJSON(id Identitaet) {
+	jb, _ := json.Marshal(id)
+	fmt.Println(string(jb))
+}
+
+func printIdAsCSV(id Identitaet) {
+	fmt.Println(id.Id + ";" + id.Vorname + ";" + id.Nachname + ";" + id.Geschlecht + ";" + id.Email + ";" + id.Geburtstag + ";" + id.Beruf + ";" + id.Abteilung)
 }
 
 func holeVornamen(filename string) (vornamen []Vorname, err error) {
@@ -145,6 +180,29 @@ func holeNachnamen(filename string) (nachnamen []Nachname, err error) {
 	return nachnamen, nil
 }
 
+func Geburtstag(minAge, maxAge int) time.Time {
+	if minAge > maxAge {
+		panic("invalid range")
+	}
+	now := time.Now()
+	from := now.AddDate(-maxAge, 0, 0)
+	to := now.AddDate(-minAge, 0, 0)
+
+	rand64 := rand.New(rand.NewSource(time.Now().UTC().UnixNano()).(rand.Source64))
+	unixTime := from.Unix() + rand64.Int63n(to.Unix()-from.Unix()+1)
+	birthday := time.Unix(unixTime, 0)
+	roundedBirthday := time.Date(birthday.Year(), birthday.Month(), birthday.Day(), 0, 0, 0, 0, birthday.Location())
+	return roundedBirthday
+}
+
+func isEmailDomainValid(domain string) bool {
+	emailDomainRegexp := regexp.MustCompile("^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+	if !emailDomainRegexp.MatchString(domain) {
+		return false
+	}
+	return true
+}
+
 // following code excerpts:
 // Copyright (c) 2017 Florian Carrere <florian@carrere.cc>
 // (The MIT License)
@@ -159,19 +217,4 @@ func ValidateFormat(email string) error {
 		return ErrBadFormat
 	}
 	return nil
-}
-
-func Geburtstag(minAge, maxAge int) time.Time {
-	if minAge > maxAge {
-		panic("invalid range")
-	}
-	now := time.Now()
-	from := now.AddDate(-maxAge, 0, 0)
-	to := now.AddDate(-minAge, 0, 0)
-
-	rand64 := rand.New(rand.NewSource(time.Now().UTC().UnixNano()).(rand.Source64))
-	unixTime := from.Unix() + rand64.Int63n(to.Unix()-from.Unix()+1)
-	birthday := time.Unix(unixTime, 0)
-	roundedBirthday := time.Date(birthday.Year(), birthday.Month(), birthday.Day(), 0, 0, 0, 0, birthday.Location())
-	return roundedBirthday
 }
