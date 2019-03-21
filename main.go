@@ -60,13 +60,19 @@ type Identitaet struct {
 	Geburtstag string `json:"birthday"`
 	Beruf      string `json:"job"`
 	Abteilung  string `json:"department"`
+	Manager	   string `json:"manager"`
 }
+
+
+
+
 
 func main() {
 	// parse command line parameters/flags
 	anzahlIdentitaeten := flag.Int("anzahl", 100, "Anzahl der zu generierenden Identitäten")
 	emailDomain := flag.String("domain", STANDARD_EMAIL_DOMAIN, "Valid Email Domain")
 	jsonFlag := flag.Bool("json", false, "for output in JSON")
+	managerFlag := flag.Int("manager", 0, "Anzahl der zu generierenden Manager unter den Identitäten")
 	flag.Parse()
 	if !isEmailDomainValid(*emailDomain) {
 		fmt.Println("Error: Invalid EMail Domain\n")
@@ -87,6 +93,11 @@ func main() {
 	//fmt.Println("#Nachnamen: " + strconv.Itoa(anzahlNachnamen))
 	//fmt.Println("#Berufe: " + strconv.Itoa(anzahlBerufe))
 	//fmt.Println("#Abteilungen: " + strconv.Itoa(anzahlAbteilungen))
+
+	alleIdentitaeten := make([]Identitaet,0)
+	managerIdentitaeten := make([]Identitaet,0)
+
+
 	for i := 0; i < *anzahlIdentitaeten; i++ {
 		rand.Seed(time.Now().UnixNano())
 		vornm := vornamen[rand.Intn(anzahlVornamen)]
@@ -109,6 +120,32 @@ func main() {
 			Abteilung:  abteilung,
 		}
 
+		alleIdentitaeten = append(alleIdentitaeten,id)
+
+		if *managerFlag > 0 && *managerFlag < *anzahlIdentitaeten && i < *managerFlag {
+			id.Manager = "isManager"
+			managerIdentitaeten = append(managerIdentitaeten,id)
+		}
+		
+
+		/*if *jsonFlag {
+			printIdAsJSON(id)
+		} else {
+			printIdAsCSV(id)
+		}*/
+	}
+
+	if *managerFlag > 0 && *managerFlag < *anzahlIdentitaeten {
+		//fmt.Println("we have managers...", managerIdentitaeten)
+	}
+
+	
+
+	for _,id := range alleIdentitaeten {
+		if *managerFlag > 0 && *managerFlag < *anzahlIdentitaeten {
+			id = setManager(id, managerIdentitaeten)
+		}
+		//fmt.Println("key:", v.Email)
 		if *jsonFlag {
 			printIdAsJSON(id)
 		} else {
@@ -117,13 +154,29 @@ func main() {
 	}
 }
 
+func setManager(id Identitaet, managers []Identitaet) Identitaet{
+	userIsManager := false
+	for _,m := range managers{
+		if m.Id == id.Id {
+			userIsManager = true
+		}
+	}
+
+	if !userIsManager {
+		managerId := managers[rand.Intn(len(managers))].Id
+		id.Manager = managerId
+	}
+	
+	return id
+}
+
 func printIdAsJSON(id Identitaet) {
 	jb, _ := json.Marshal(id)
 	fmt.Println(string(jb))
 }
 
 func printIdAsCSV(id Identitaet) {
-	fmt.Println(id.Id + ";" + id.Vorname + ";" + id.Nachname + ";" + id.Geschlecht + ";" + id.Email + ";" + id.Geburtstag + ";" + id.Beruf + ";" + id.Abteilung)
+	fmt.Println(id.Id + ";" + id.Vorname + ";" + id.Nachname + ";" + id.Geschlecht + ";" + id.Email + ";" + id.Geburtstag + ";" + id.Beruf + ";" + id.Abteilung + ";" + id.Manager)
 }
 
 func holeVornamen(filename string) (vornamen []Vorname, err error) {
