@@ -1,5 +1,6 @@
 // Test Identity Generator
-// Copyright (C) 2019  Florian Probst
+// Copyright (C) 2019  obsti8383 (https://github.com/obsti8383) &
+//					  threepw0od (https://github.com/threepw0od)
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -60,12 +61,8 @@ type Identitaet struct {
 	Geburtstag string `json:"birthday"`
 	Beruf      string `json:"job"`
 	Abteilung  string `json:"department"`
-	Manager	   string `json:"manager"`
+	Manager    string `json:"manager"`
 }
-
-
-
-
 
 func main() {
 	// parse command line parameters/flags
@@ -94,9 +91,8 @@ func main() {
 	//fmt.Println("#Berufe: " + strconv.Itoa(anzahlBerufe))
 	//fmt.Println("#Abteilungen: " + strconv.Itoa(anzahlAbteilungen))
 
-	alleIdentitaeten := make([]Identitaet,0)
-	managerIdentitaeten := make([]Identitaet,0)
-
+	alleIdentitaeten := make([]Identitaet, 0)
+	managerIdentitaeten := make([]Identitaet, 0)
 
 	for i := 0; i < *anzahlIdentitaeten; i++ {
 		rand.Seed(time.Now().UnixNano())
@@ -120,13 +116,12 @@ func main() {
 			Abteilung:  abteilung,
 		}
 
-		alleIdentitaeten = append(alleIdentitaeten,id)
+		alleIdentitaeten = append(alleIdentitaeten, id)
 
 		if *managerFlag > 0 && *managerFlag < *anzahlIdentitaeten && i < *managerFlag {
 			id.Manager = "isManager"
-			managerIdentitaeten = append(managerIdentitaeten,id)
+			managerIdentitaeten = append(managerIdentitaeten, id)
 		}
-		
 
 		/*if *jsonFlag {
 			printIdAsJSON(id)
@@ -139,9 +134,7 @@ func main() {
 		//fmt.Println("we have managers...", managerIdentitaeten)
 	}
 
-	
-
-	for _,id := range alleIdentitaeten {
+	for _, id := range alleIdentitaeten {
 		if *managerFlag > 0 && *managerFlag < *anzahlIdentitaeten {
 			id = setManager(id, managerIdentitaeten)
 		}
@@ -154,9 +147,9 @@ func main() {
 	}
 }
 
-func setManager(id Identitaet, managers []Identitaet) Identitaet{
+func setManager(id Identitaet, managers []Identitaet) Identitaet {
 	userIsManager := false
-	for _,m := range managers{
+	for _, m := range managers {
 		if m.Id == id.Id {
 			userIsManager = true
 		}
@@ -166,7 +159,7 @@ func setManager(id Identitaet, managers []Identitaet) Identitaet{
 		managerId := managers[rand.Intn(len(managers))].Id
 		id.Manager = managerId
 	}
-	
+
 	return id
 }
 
