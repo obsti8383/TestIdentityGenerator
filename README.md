@@ -25,6 +25,8 @@ Der Aufruf ist mit oder ohne Parameter möglich. Folgende Parameter sind vorhand
         Valid Email Domain (default "company.test")
   -json
         for output in JSON
+  -manager
+  		set number of managers      
 ```
 
 Beispielaufrufe:
@@ -49,5 +51,14 @@ FNA2;Francesca;Naujoks;w;francesca.naujoks@company.test;1927-12-30;Galvaniseur;R
 ADO0;Alexs;Dosch;m;alexs.dosch@company.test;1929-05-23;Elektroniker für Betriebstechnik;Controlling
 YKA1;Yousef;Kapfer;m;yousef.kapfer@company.test;1924-07-24;Weinküfer;Öffentlichkeitsarbeit
 AHA2;Ahmed;Haake;m;ahmed.haake@company.test;1978-04-07;Fachmann für Systemgastronomie;IT
+[...]
+```
+
+```
+> ./TestIdentityGenerator --anzahl 4  --manager 2
+MPI0;Marina;Pille;w;marina.pille@company.test;1951-12-16;Textilreiniger;Logistik;
+CMO1;Christiana;Möhring;w;christiana.moehring@company.test;1969-03-21;Maschinenzusammensetzer;Rechnungswesen;
+MBO2;Mohmed;Böhner;m;mohmed.boehner@company.test;1974-04-22;Industriekeramiker Verfahrenstechnik;Poststelle;CMO1
+LOE3;Liya;Oellers;w;liya.oellers@company.test;1989-07-13;Landwirtschaftlicher Laborant;Qualitätssicherung;MPI0
 [...]
 ```
