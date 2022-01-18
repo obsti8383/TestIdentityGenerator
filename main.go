@@ -1,5 +1,5 @@
 // Test Identity Generator
-// Copyright (C) 2019  obsti8383 (https://github.com/obsti8383) &
+// Copyright (C) 2019-2022  obsti8383 (https://github.com/obsti8383) &
 //					  threepw0od (https://github.com/threepw0od)
 //
 // This program is free software: you can redistribute it and/or modify
@@ -25,6 +25,7 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"os"
 	"regexp"
@@ -94,8 +95,10 @@ func main() {
 	alleIdentitaeten := make([]Identitaet, 0)
 	managerIdentitaeten := make([]Identitaet, 0)
 
+	rand.Seed(time.Now().UnixNano())                                                // rand seed
+	rand64 := rand.New(rand.NewSource(time.Now().UTC().UnixNano()).(rand.Source64)) // rand fuer Geburtstage
+
 	for i := 0; i < *anzahlIdentitaeten; i++ {
-		rand.Seed(time.Now().UnixNano())
 		vornm := vornamen[rand.Intn(anzahlVornamen)]
 		nachnm := nachnamen[rand.Intn(anzahlNachnamen)]
 		beruf := berufe[rand.Intn(anzahlBerufe)]
@@ -111,37 +114,35 @@ func main() {
 			Nachname:   nachnm.Nachname,
 			Geschlecht: vornm.Geschlecht,
 			Email:      email,
-			Geburtstag: Geburtstag(16, 105).Format("2006-01-02"),
+			Geburtstag: Geburtstag(16, 105, *rand64).Format("2006-01-02"),
 			Beruf:      beruf,
 			Abteilung:  abteilung,
 		}
-
-		alleIdentitaeten = append(alleIdentitaeten, id)
 
 		if *managerFlag > 0 && *managerFlag < *anzahlIdentitaeten && i < *managerFlag {
 			id.Manager = "isManager"
 			managerIdentitaeten = append(managerIdentitaeten, id)
 		}
 
-		/*if *jsonFlag {
-			printIdAsJSON(id)
-		} else {
-			printIdAsCSV(id)
-		}*/
-	}
-
-	if *managerFlag > 0 && *managerFlag < *anzahlIdentitaeten {
-		//fmt.Println("we have managers...", managerIdentitaeten)
+		alleIdentitaeten = append(alleIdentitaeten, id)
 	}
 
 	for _, id := range alleIdentitaeten {
 		if *managerFlag > 0 && *managerFlag < *anzahlIdentitaeten {
 			id = setManager(id, managerIdentitaeten)
 		}
-		//fmt.Println("key:", v.Email)
-		if *jsonFlag {
-			printIdAsJSON(id)
-		} else {
+	}
+
+	if *jsonFlag {
+		encodedJSON, err := json.MarshalIndent(alleIdentitaeten, "", "    ")
+		if err != nil {
+			log.Fatal("Failed to generate json", err)
+		}
+		fmt.Printf("%s\n", string(encodedJSON))
+		//printIdAsJSON(id)
+	} else {
+		fmt.Println("id;firstName;firstname;lastname;sex;mail;birthday;job;department;manager")
+		for _, id := range alleIdentitaeten {
 			printIdAsCSV(id)
 		}
 	}
@@ -226,7 +227,7 @@ func holeNachnamen(filename string) (nachnamen []Nachname, err error) {
 	return nachnamen, nil
 }
 
-func Geburtstag(minAge, maxAge int) time.Time {
+func Geburtstag(minAge, maxAge int, rand64 rand.Rand) time.Time {
 	if minAge > maxAge {
 		panic("invalid range")
 	}
@@ -234,7 +235,6 @@ func Geburtstag(minAge, maxAge int) time.Time {
 	from := now.AddDate(-maxAge, 0, 0)
 	to := now.AddDate(-minAge, 0, 0)
 
-	rand64 := rand.New(rand.NewSource(time.Now().UTC().UnixNano()).(rand.Source64))
 	unixTime := from.Unix() + rand64.Int63n(to.Unix()-from.Unix()+1)
 	birthday := time.Unix(unixTime, 0)
 	roundedBirthday := time.Date(birthday.Year(), birthday.Month(), birthday.Day(), 0, 0, 0, 0, birthday.Location())
