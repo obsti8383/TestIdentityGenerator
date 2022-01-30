@@ -134,7 +134,8 @@ func main() {
 		for i, id := range alleIdentitaeten {
 			if id.Manager != "isManager" {
 				alleIdentitaeten[i].Manager = selectManager(managerIdentitaeten)
-				fmt.Println(alleIdentitaeten[i].Manager)
+			} else {
+				alleIdentitaeten[i].Manager = "" // set manager fields for managers to empty string
 			}
 		}
 	}
