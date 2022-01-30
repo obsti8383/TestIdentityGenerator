@@ -1,6 +1,7 @@
-![Go Vet and Lint Status](https://github.com/obsti8383/TestIdentityGenerator/actions/workflows/golang_test.yml/badge.svg)
-
 # TestIdentityGenerator
+
+![Go Vet and Lint Status](https://github.com/obsti8383/TestIdentityGenerator/actions/workflows/golang_lint_vet_and_testBuild.yml/badge.svg)
+
 Tool zum Generieren von Test-Identitäten (z.B. für den Bereich Identity und Access Management)
 
 Die Identitäten werden per Zufallsgenerator mit Hilfe von Daten aus Text-Dateien (vornamen.txt, nachnamen.txt, berufe.txt, abteilungen.txt) gebildet.
