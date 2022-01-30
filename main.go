@@ -130,9 +130,12 @@ func main() {
 		alleIdentitaeten = append(alleIdentitaeten, id)
 	}
 
-	for _, id := range alleIdentitaeten {
-		if *managerFlag > 0 && *managerFlag < *anzahlIdentitaeten {
-			id = setManager(id, managerIdentitaeten)
+	if *managerFlag > 0 && *managerFlag < *anzahlIdentitaeten {
+		for i, id := range alleIdentitaeten {
+			if id.Manager != "isManager" {
+				alleIdentitaeten[i].Manager = selectManager(managerIdentitaeten)
+				fmt.Println(alleIdentitaeten[i].Manager)
+			}
 		}
 	}
 
@@ -151,20 +154,10 @@ func main() {
 	}
 }
 
-func setManager(id Identitaet, managers []Identitaet) Identitaet {
-	userIsManager := false
-	for _, m := range managers {
-		if m.ID == id.ID {
-			userIsManager = true
-		}
-	}
+func selectManager(managers []Identitaet) string {
+	managerID := managers[rand.Intn(len(managers))].ID
 
-	if !userIsManager {
-		managerID := managers[rand.Intn(len(managers))].ID
-		id.Manager = managerID
-	}
-
-	return id
+	return managerID
 }
 
 func printIDAsJSON(id Identitaet) {
