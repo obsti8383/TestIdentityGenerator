@@ -35,7 +35,7 @@ import (
 	"unicode/utf8"
 )
 
-const STANDARD_EMAIL_DOMAIN = "company.test"
+const standardEmailDomain = "company.test"
 
 // Quellen für Namen:
 // https://offenedaten-koeln.de/dataset/vornamen
@@ -44,17 +44,20 @@ const STANDARD_EMAIL_DOMAIN = "company.test"
 // Quellen für Abteilungen:
 // http://abimagazin.de/beruf-karriere/arbeitsmarkt/unternehmensportraits/infotext-typische-abteilungen-04868.htm
 
+// Vorname mit Geschlecht
 type Vorname struct {
 	Vorname    string
 	Geschlecht string
 }
 
+// Nachname ohne weitere Attribute
 type Nachname struct {
 	Nachname string
 }
 
+// Identitaet mit allen Attributen
 type Identitaet struct {
-	Id         string `json:"id"`
+	ID         string `json:"id"`
 	Vorname    string `json:"firstName"`
 	Nachname   string `json:"surname"`
 	Geschlecht string `json:"sex"`
@@ -68,12 +71,12 @@ type Identitaet struct {
 func main() {
 	// parse command line parameters/flags
 	anzahlIdentitaeten := flag.Int("anzahl", 100, "Anzahl der zu generierenden Identitäten")
-	emailDomain := flag.String("domain", STANDARD_EMAIL_DOMAIN, "Valid Email Domain")
+	emailDomain := flag.String("domain", standardEmailDomain, "Valid Email Domain")
 	jsonFlag := flag.Bool("json", false, "for output in JSON")
 	managerFlag := flag.Int("manager", 0, "Anzahl der zu generierenden Manager unter den Identitäten")
 	flag.Parse()
 	if !isEmailDomainValid(*emailDomain) {
-		fmt.Println("Error: Invalid EMail Domain\n")
+		fmt.Println("Error: Invalid EMail Domain")
 		//flag.PrintDefaults()
 		os.Exit(1)
 	}
@@ -104,17 +107,17 @@ func main() {
 		beruf := berufe[rand.Intn(anzahlBerufe)]
 		abteilung := abteilungen[rand.Intn(anzahlAbteilungen)]
 		email := Accents(strings.ToLower(vornm.Vorname)) + "." + Accents(strings.ToLower(nachnm.Nachname)) + "@" + *emailDomain
-		validateErr := ValidateFormat(email)
+		validateErr := validateFormat(email)
 		if validateErr != nil {
 			panic("Validation error: " + email)
 		}
 		id := Identitaet{
-			Id:         strings.ToUpper(Accents(vornm.Vorname)[0:1]+Accents(nachnm.Nachname)[0:2]) + strconv.Itoa(i),
+			ID:         strings.ToUpper(Accents(vornm.Vorname)[0:1]+Accents(nachnm.Nachname)[0:2]) + strconv.Itoa(i),
 			Vorname:    vornm.Vorname,
 			Nachname:   nachnm.Nachname,
 			Geschlecht: vornm.Geschlecht,
 			Email:      email,
-			Geburtstag: Geburtstag(16, 105, *rand64).Format("2006-01-02"),
+			Geburtstag: geburtstag(16, 105, *rand64).Format("2006-01-02"),
 			Beruf:      beruf,
 			Abteilung:  abteilung,
 		}
@@ -143,7 +146,7 @@ func main() {
 	} else {
 		fmt.Println("id;firstName;firstname;lastname;sex;mail;birthday;job;department;manager")
 		for _, id := range alleIdentitaeten {
-			printIdAsCSV(id)
+			printIDAsCSV(id)
 		}
 	}
 }
@@ -151,26 +154,26 @@ func main() {
 func setManager(id Identitaet, managers []Identitaet) Identitaet {
 	userIsManager := false
 	for _, m := range managers {
-		if m.Id == id.Id {
+		if m.ID == id.ID {
 			userIsManager = true
 		}
 	}
 
 	if !userIsManager {
-		managerId := managers[rand.Intn(len(managers))].Id
-		id.Manager = managerId
+		managerID := managers[rand.Intn(len(managers))].ID
+		id.Manager = managerID
 	}
 
 	return id
 }
 
-func printIdAsJSON(id Identitaet) {
+func printIDAsJSON(id Identitaet) {
 	jb, _ := json.Marshal(id)
 	fmt.Println(string(jb))
 }
 
-func printIdAsCSV(id Identitaet) {
-	fmt.Println(id.Id + ";" + id.Vorname + ";" + id.Nachname + ";" + id.Geschlecht + ";" + id.Email + ";" + id.Geburtstag + ";" + id.Beruf + ";" + id.Abteilung + ";" + id.Manager)
+func printIDAsCSV(id Identitaet) {
+	fmt.Println(id.ID + ";" + id.Vorname + ";" + id.Nachname + ";" + id.Geschlecht + ";" + id.Email + ";" + id.Geburtstag + ";" + id.Beruf + ";" + id.Abteilung + ";" + id.Manager)
 }
 
 func holeVornamen(filename string) (vornamen []Vorname, err error) {
@@ -227,7 +230,7 @@ func holeNachnamen(filename string) (nachnamen []Nachname, err error) {
 	return nachnamen, nil
 }
 
-func Geburtstag(minAge, maxAge int, rand64 rand.Rand) time.Time {
+func geburtstag(minAge, maxAge int, rand64 rand.Rand) time.Time {
 	if minAge > maxAge {
 		panic("invalid range")
 	}
@@ -258,7 +261,7 @@ var (
 	emailRegexp = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 )
 
-func ValidateFormat(email string) error {
+func validateFormat(email string) error {
 	if !emailRegexp.MatchString(email) {
 		return ErrBadFormat
 	}
