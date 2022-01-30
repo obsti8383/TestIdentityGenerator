@@ -1,4 +1,4 @@
-![Go Vet and Lint Status](https://github.com/obsti8383/TestIdentityGenerator/.github/workflows/golang_test.yml/badge.svg)
+![Go Vet and Lint Status](https://github.com/obsti8383/TestIdentityGenerator/github/actions/workflows/golang_test.yml/badge.svg)
 
 # TestIdentityGenerator
 Tool zum Generieren von Test-Identitäten (z.B. für den Bereich Identity und Access Management)
