@@ -48,8 +48,8 @@ jobs:
       run: go build . 
 
     # Run testing on the code
-    #- name: Run testing
-    #  run: cd test && go test -v
+    - name: Run testing
+      run: go test -v
     
     # Send notification
 
