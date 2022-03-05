@@ -38,12 +38,21 @@ func generate(anzahlIdentitaeten int, emailDomain string, managerFlag int) []Ide
 	rand.Seed(time.Now().UnixNano())                                                // rand seed
 	rand64 := rand.New(rand.NewSource(time.Now().UTC().UnixNano()).(rand.Source64)) // rand fuer Geburtstage
 
+	emailDuplicates := make(map[string]int)
 	for i := 0; i < anzahlIdentitaeten; i++ {
 		vornm := vornamen[rand.Intn(anzahlVornamen)]
 		nachnm := nachnamen[rand.Intn(anzahlNachnamen)]
 		beruf := berufe[rand.Intn(anzahlBerufe)]
 		abteilung := abteilungen[rand.Intn(anzahlAbteilungen)]
-		email := Accents(strings.ToLower(vornm.Vorname)) + "." + Accents(strings.ToLower(nachnm.Nachname)) + "@" + emailDomain
+		email := fmt.Sprintf("%s.%s@%s", Accents(strings.ToLower(vornm.Vorname)), Accents(strings.ToLower(nachnm.Nachname)), emailDomain)
+		duplicateCounter, prs := emailDuplicates[email]
+		if prs && duplicateCounter > 0 {
+			emailDuplicates[email]++
+			email = fmt.Sprintf("%s.%s.%d@%s", Accents(strings.ToLower(vornm.Vorname)), Accents(strings.ToLower(nachnm.Nachname)), duplicateCounter, emailDomain)
+		} else {
+			emailDuplicates[email] = 1
+		}
+
 		validateErr := validateFormat(email)
 		if validateErr != nil {
 			panic("Validation error: " + email)

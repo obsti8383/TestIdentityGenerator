@@ -5,7 +5,7 @@ import (
 )
 
 func TestStandardCaseWithManagers(t *testing.T) {
-	testIdentityCount := 2000
+	testIdentityCount := 100000
 	testManagerCount := 1000
 	allIdentities := generate(testIdentityCount, "test.test", testManagerCount)
 
@@ -41,7 +41,7 @@ func TestStandardCaseWithManagers(t *testing.T) {
 }
 
 func TestStandardCaseWithoutManagers(t *testing.T) {
-	testIdentityCount := 2000
+	testIdentityCount := 50000
 	testManagerCount := 0
 	allIdentities := generate(testIdentityCount, "test.test", testManagerCount)
 

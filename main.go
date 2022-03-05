@@ -73,11 +73,6 @@ func selectManager(managers []Identitaet) string {
 	return managerID
 }
 
-func printIDAsJSON(id Identitaet) {
-	jb, _ := json.Marshal(id)
-	fmt.Println(string(jb))
-}
-
 func printIDAsCSV(id Identitaet) {
 	fmt.Println(id.ID + ";" + id.Vorname + ";" + id.Nachname + ";" + id.Geschlecht + ";" + id.Email + ";" + id.Geburtstag + ";" + id.Beruf + ";" + id.Abteilung + ";" + id.Manager)
 }
