@@ -1,14 +1,37 @@
-# Download and invoke cyclonedx-gomod in a single step
-- name: Generate SBOM
-  uses: CycloneDX/gh-gomod-generate-sbom@v1
-  with:
-    version: v1
-    args: mod -licenses -json -output bom.json
+# This is a basic workflow to help you get started with Actions
 
-# Just download cyclonedx-gomod and call it in a later step
-- name: Download cyclonedx-gomod
-  uses: CycloneDX/gh-gomod-generate-sbom@v1
-  with:
-    version: v1
-- name: Generate SBOM
-  run: cyclonedx-gomod app -licenses -files -output bom.xml -main main
+name: go_sbom_test
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # The "build" workflow
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Download and invoke cyclonedx-gomod in a single step
+    - name: Generate SBOM
+      uses: CycloneDX/gh-gomod-generate-sbom@v1
+      with:
+        version: v1
+        args: mod -licenses -json -output bom.json
+
+    # Just download cyclonedx-gomod and call it in a later step
+    - name: Download cyclonedx-gomod
+      uses: CycloneDX/gh-gomod-generate-sbom@v1
+      with:
+        version: v1
+    - name: Generate SBOM
+      run: cyclonedx-gomod app -licenses -files -output bom.xml -main main
