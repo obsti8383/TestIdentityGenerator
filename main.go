@@ -60,7 +60,7 @@ func main() {
 		fmt.Printf("%s\n", string(encodedJSON))
 		//printIdAsJSON(id)
 	} else {
-		fmt.Println("id;firstName;firstname;lastname;sex;mail;birthday;job;department;manager")
+		fmt.Println("id;firstName;lastname;sex;mail;birthday;job;department;manager")
 		for _, id := range alleIdentitaeten {
 			printIDAsCSV(id)
 		}
